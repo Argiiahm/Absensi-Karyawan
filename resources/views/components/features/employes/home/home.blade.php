@@ -27,7 +27,7 @@
                         Kamis, 16 Mei 2024
                     </p>
 
-                    <h2 class="text-4xl font-bold text-slate-800 mt-1 tracking-tight">
+                    <h2 class="text-4xl font-bold text-slate-800 mt-1 font-mono">
                         09:41:20
                     </h2>
 

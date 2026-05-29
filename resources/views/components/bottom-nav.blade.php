@@ -11,7 +11,7 @@
 
         <a href="/history"
             class="flex flex-col items-center justify-center {{ request()->is('history*') ? 'text-blue-600' : 'text-zinc-500' }}">
-            <i class="ph ph-clock-counter-clockwise text-xl"></i>
+            <i class="ph-fill ph-clock-counter-clockwise text-xl"></i>
             <span class="text-[11px] mt-1">
                 Riwayat
             </span>
@@ -19,7 +19,7 @@
 
         <a href="/attedance/ishoma/index"
             class="flex flex-col items-center justify-center {{ request()->is('attedance/ishoma*') ? 'text-blue-600' : 'text-zinc-500' }}">
-            <i class="ph ph-moon text-xl"></i>
+            <i class="ph-fill ph-moon text-xl"></i>
             <span class="text-[11px] mt-1">
                 Absen Solat
             </span>
@@ -27,7 +27,7 @@
 
         <a href="/profile"
             class="flex flex-col items-center justify-center {{ request()->is('profile*') ? 'text-blue-600' : 'text-zinc-500' }}">
-            <i class="ph ph-user text-xl"></i>
+            <i class="ph-fill ph-user text-xl"></i>
             <span class="text-[11px] mt-1">
                 Profil
             </span>
