@@ -4,3 +4,21 @@
 @source "../../storage/framework/views/*.php";
 @source "../**/*.blade.php";
 @source "../**/*.js";
+
+body {
+}
+
+.scroll {
+    overflow-y: auto;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE & Edge lama */
+    -ms-overflow-style: none;
+}
+
+/* Chrome, Edge, Safari, Opera */
+.scroll::-webkit-scrollbar {
+    display: none;
+}

@@ -5,23 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi - Karyawan</title>
-
     @vite('resources/css/app.css')
-
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
 <body class="bg-zinc-200 flex justify-center">
-    <div class="w-full max-w-sm h-screen bg-white relative">
-        <!-- Content -->
-        <main class="h-full scroll pb-24">
-            {{ $slot }}
-        </main>
-        <!-- Bottom Nav -->
-        <div class="absolute bottom-0 left-0 right-0 z-50">
-            <x-bottom-nav />
-        </div>
-    </div>
+    <!-- Content -->
+    <main class="w-full max-w-sm h-screen bg-white">
+        {{ $slot }}
+    </main>
 </body>
 
 </html>
