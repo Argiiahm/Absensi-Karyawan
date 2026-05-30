@@ -10,22 +10,24 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
-
     @vite('resources/css/app.css')
-
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> --}}
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
 <body class="bg-zinc-200 flex justify-center">
-    <div class="w-full max-w-sm h-screen bg-white relative">
+    <div class="w-full bg-white min-h-screen sm:max-w-sm sm:mx-auto">
+
         <!-- Content -->
-        <main class="h-full scroll pb-24">
+        <main class="min-h-screen overflow-y-auto pb-20">
             {{ $slot }}
         </main>
+
         <!-- Bottom Nav -->
-        <div class="absolute bottom-0 left-0 right-0 z-50">
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm z-50">
             <x-bottom-nav />
         </div>
+
     </div>
 </body>
 

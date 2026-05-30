@@ -10,20 +10,16 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
-
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> --}}
     @vite('resources/css/app.css')
-
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 min-h-screen flex">
     <!-- Sidebar Overlay for Mobile -->
-    <div id="sidebar-overlay" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 ease-in-out md:hidden"></div>
+    <div id="sidebar-overlay"
+        class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 ease-in-out md:hidden">
+    </div>
 
     <!-- Sidebar Component -->
     <x-sidebar-admin />
@@ -34,7 +30,8 @@
         <header class="h-16 bg-white border-b border-slate-100 px-4 md:px-8 flex items-center justify-between shrink-0">
             <div class="flex items-center">
                 <!-- Hamburger Menu Button (Mobile Only) -->
-                <button id="sidebar-toggle" class="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-800 mr-2 transition-all">
+                <button id="sidebar-toggle"
+                    class="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-800 mr-2 transition-all">
                     <i class="ph ph-list text-xl"></i>
                 </button>
                 <h2 class="font-bold text-slate-800 text-base md:text-lg">
@@ -62,7 +59,7 @@
         </main>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('admin-sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const toggleBtn = document.getElementById('sidebar-toggle');
