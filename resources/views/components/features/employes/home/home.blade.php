@@ -11,7 +11,6 @@
                         Selamat pagi! Semangat bekerja hari ini.
                     </p>
                 </div>
-
                 <button class="bg-blue-500/50 p-2 rounded-full relative">
                     <i class="ph-fill ph-bell text-lg"></i>
                     <span class="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -21,28 +20,23 @@
         <!-- Clock Card -->
         <div class="px-5 -mt-14 relative z-10">
             <div class="bg-white rounded-2xl p-5 border border-slate-100 flex items-center justify-between">
-
                 <div>
                     <p class="text-sm text-slate-500 font-medium">
                         Kamis, 16 Mei 2024
                     </p>
-
                     <h2 class="text-4xl font-bold text-slate-800 mt-1 font-mono">
                         09:41:20
                     </h2>
-
                     <p
                         class="text-xs font-semibold text-emerald-600 mt-2 bg-emerald-50 inline-block px-2 py-1 rounded-md">
                         Sudah Absen Masuk
                     </p>
                 </div>
-
                 <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center">
                     <i class="ph-fill ph-laptop text-4xl text-blue-500"></i>
                 </div>
             </div>
         </div>
-
         <!-- Ringkasan -->
         <div class="px-5 mt-6">
             <h3 class="font-bold text-slate-800 mb-3">
@@ -64,7 +58,7 @@
                         </div>
                     </div>
                     <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        Tepat Waktu
+                        sudah absen
                     </span>
                 </div>
                 <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between">
@@ -73,7 +67,6 @@
                             class="w-10 h-10 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center">
                             <i class="ph-fill ph-sign-out"></i>
                         </div>
-
                         <div>
                             <p class="text-sm font-bold text-slate-800">
                                 Absen Pulang
