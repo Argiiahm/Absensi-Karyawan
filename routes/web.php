@@ -11,6 +11,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
 use Illuminate\Support\Facades\Route;
 
+// Authentication Routes
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request');
+Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+
 Route::get('/', function () {
     return view('components.features.employes.home.home');
 });
