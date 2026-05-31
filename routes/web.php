@@ -5,11 +5,15 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\LeaveController as AdminLeaveController;
+use App\Http\Controllers\Admin\SubmissionController as AdminSubmissionController;
+use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\AttedenceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +65,13 @@ Route::middleware(['auth'])->group(function () {
         // Leaves / Izin / Cuti
         Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
         Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+
+        // Submissions / Pengajuan / Laporan
+        Route::get('/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
+        Route::post('/submissions', [SubmissionController::class, 'store'])->name('submissions.store');
+
+        // Informations / Pengumuman
+        Route::get('/informations', [AnnouncementController::class, 'index'])->name('informations.index');
     });
 });
 
@@ -93,4 +104,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/leaves', [AdminLeaveController::class, 'index']);
     Route::post('/leaves/{id}/approve', [AdminLeaveController::class, 'approve']);
     Route::post('/leaves/{id}/reject', [AdminLeaveController::class, 'reject']);
+
+    // Kelola Pengajuan & Laporan
+    Route::get('/submissions', [AdminSubmissionController::class, 'index']);
+    Route::post('/submissions/{id}/approve', [AdminSubmissionController::class, 'approve']);
+    Route::post('/submissions/{id}/reject', [AdminSubmissionController::class, 'reject']);
+
+    // Kelola Informasi / Pengumuman
+    Route::get('/informations', [AdminAnnouncementController::class, 'index']);
+    Route::get('/informations/create', [AdminAnnouncementController::class, 'create']);
+    Route::post('/informations', [AdminAnnouncementController::class, 'store']);
+    Route::delete('/informations/{id}', [AdminAnnouncementController::class, 'destroy']);
 });

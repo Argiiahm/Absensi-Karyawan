@@ -1,4 +1,32 @@
 <x-layout-admin title="Dashboard Overview">
+    @if(($totalPendingNotificationsCount ?? 0) > 0)
+        <div class="bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6 flex items-center justify-between shadow-sm animate-pulse">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center text-lg shrink-0">
+                    <i class="ph-fill ph-warning-circle text-xl"></i>
+                </div>
+                <div>
+                    <h5 class="font-bold text-xs text-amber-900">Perhatian: Pengajuan Tertunda</h5>
+                    <p class="text-[10px] text-amber-700 font-semibold mt-0.5 leading-normal">
+                        Ada {{ $totalPendingNotificationsCount }} pengajuan baru yang memerlukan tindakan: {{ $pendingLeavesCount }} Izin/Cuti dan {{ $pendingSubmissionsCount }} Pengajuan/Laporan.
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                @if($pendingLeavesCount > 0)
+                    <a href="/admin/leaves?status=pending" class="bg-white hover:bg-slate-50 text-amber-800 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-amber-200 transition-colors">
+                        Tinjau Izin
+                    </a>
+                @endif
+                @if($pendingSubmissionsCount > 0)
+                    <a href="/admin/submissions?status=pending" class="bg-white hover:bg-slate-50 text-amber-800 text-[10px] font-bold px-3 py-1.5 rounded-lg border border-amber-200 transition-colors">
+                        Tinjau Pengajuan
+                    </a>
+                @endif
+            </div>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <!-- Card: Total Employees -->
         <div class="bg-white rounded-2xl border border-slate-100 p-6 flex items-center justify-between">

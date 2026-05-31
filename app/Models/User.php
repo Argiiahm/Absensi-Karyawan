@@ -25,6 +25,7 @@ class User extends Authenticatable
         'is_face_enrolled',
         'face_descriptor',
         'face_photo_path',
+        'last_read_announcement_id',
     ];
 
     /**
@@ -65,5 +66,10 @@ class User extends Authenticatable
     public function leaves()
     {
         return $this->hasMany(\App\Models\Leave::class);
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(\App\Models\Submission::class);
     }
 }

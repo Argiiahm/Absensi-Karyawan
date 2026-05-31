@@ -70,7 +70,7 @@
                 </div>
                 <i class="ph ph-caret-right text-zinc-400"></i>
             </a>
-            <a href="#" class="flex items-center justify-between p-4 hover:bg-zinc-50 transition-all">
+            <a href="/submissions" class="flex items-center justify-between p-4 hover:bg-zinc-50 transition-all">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
                         <i class="ph ph-question text-emerald-600"></i>

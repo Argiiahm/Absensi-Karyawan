@@ -50,6 +50,18 @@
             <i class="ph-fill ph-envelope-open text-lg"></i>
             Persetujuan Izin
         </a>
+
+        <a href="/admin/submissions"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ request()->is('admin/submissions*') ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }}">
+            <i class="ph-fill ph-chat-centered-text text-lg"></i>
+            Pengajuan Karyawan
+        </a>
+
+        <a href="/admin/informations"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ request()->is('admin/informations*') ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }}">
+            <i class="ph-fill ph-megaphone text-lg"></i>
+            Kelola Informasi
+        </a>
     </nav>
 
     <!-- User Profile / Footer Sidebar -->

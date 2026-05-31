@@ -11,10 +11,13 @@
                         Selamat pagi! Semangat bekerja hari ini.
                     </p>
                 </div>
-                <button class="bg-blue-500/50 p-2 rounded-full relative">
+                <a href="/informations" class="bg-blue-500/50 p-2 rounded-full relative flex items-center justify-center hover:bg-blue-500/70 transition-colors">
                     <i class="ph-fill ph-bell text-lg"></i>
-                    <span class="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                    @if($hasUnreadAnnouncement)
+                        <span class="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+                        <span class="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                    @endif
+                </a>
             </div>
         </div>
         <!-- Clock Card -->
@@ -173,6 +176,29 @@
                     </div>
                     <span class="text-[11px] font-medium text-slate-700">
                         Izin / Cuti
+                    </span>
+                </a>
+                <a href="/submissions"
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                    <div
+                        class="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-2">
+                        <i class="ph-fill ph-chat-centered-text text-xl"></i>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-700">
+                        Pengajuan
+                    </span>
+                </a>
+                <a href="/informations"
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors relative">
+                    <div
+                        class="w-11 h-11 bg-cyan-50 text-cyan-600 rounded-full flex items-center justify-center mb-2">
+                        <i class="ph-fill ph-megaphone text-xl"></i>
+                    </div>
+                    @if($hasUnreadAnnouncement)
+                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    @endif
+                    <span class="text-[11px] font-medium text-slate-700">
+                        Informasi
                     </span>
                 </a>
             </div>

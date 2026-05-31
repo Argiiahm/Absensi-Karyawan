@@ -45,11 +45,61 @@
                 </span>
                 <div class="w-px h-6 bg-slate-150"></div>
                 <!-- Notifications -->
-                <button
-                    class="relative w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-100">
-                    <i class="ph ph-bell"></i>
-                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                </button>
+                <div class="relative">
+                    <button id="notification-toggle"
+                        class="relative w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer">
+                        <i class="ph ph-bell"></i>
+                        @if(($totalPendingNotificationsCount ?? 0) > 0)
+                            <span id="notif-ping" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full animate-ping hidden"></span>
+                            <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                        @endif
+                    </button>
+                    <!-- Notification Dropdown -->
+                    <div id="notification-dropdown" class="absolute right-0 mt-2 w-72 bg-white rounded-2xl border border-slate-100 shadow-xl py-2 z-50 hidden opacity-0 translate-y-1 transition-all duration-205">
+                        <div class="px-4 py-2 border-b border-slate-50 flex justify-between items-center">
+                            <span class="font-bold text-xs text-slate-800">Pemberitahuan</span>
+                            @if(($totalPendingNotificationsCount ?? 0) > 0)
+                                <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                    {{ $totalPendingNotificationsCount }} Baru
+                                </span>
+                            @endif
+                        </div>
+                        <div class="divide-y divide-slate-50 max-h-60 overflow-y-auto">
+                            <!-- Pending Leaves -->
+                            <a href="/admin/leaves?status=pending" class="px-4 py-3 hover:bg-slate-50/50 flex items-start gap-3 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                    <i class="ph-fill ph-calendar-blank text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Persetujuan Izin/Cuti</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-normal font-semibold">
+                                        @if(($pendingLeavesCount ?? 0) > 0)
+                                            Ada {{ $pendingLeavesCount }} pengajuan izin baru menunggu persetujuan.
+                                        @else
+                                            Tidak ada pengajuan izin baru.
+                                        @endif
+                                    </p>
+                                </div>
+                            </a>
+                            <!-- Pending Submissions -->
+                            <a href="/admin/submissions?status=pending" class="px-4 py-3 hover:bg-slate-50/50 flex items-start gap-3 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                    <i class="ph-fill ph-chat-centered-text text-base"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Pengajuan & Laporan</p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-normal font-semibold">
+                                        @if(($pendingSubmissionsCount ?? 0) > 0)
+                                            Ada {{ $pendingSubmissionsCount }} pengajuan baru menunggu peninjauan.
+                                        @else
+                                            Tidak ada pengajuan baru.
+                                        @endif
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -86,6 +136,64 @@
             if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
             if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
             if (overlay) overlay.addEventListener('click', closeSidebar);
+
+            // Notification Dropdown Toggle & Read Status Check
+            const notifToggle = document.getElementById('notification-toggle');
+            const notifDropdown = document.getElementById('notification-dropdown');
+            const ping = document.getElementById('notif-ping');
+            const badge = document.getElementById('notif-badge');
+            const totalCount = {{ $totalPendingNotificationsCount ?? 0 }};
+
+            // Check read status on load using localStorage
+            if (totalCount > 0) {
+                const lastSeenCount = parseInt(localStorage.getItem('admin_last_seen_notif_count') || '0');
+                if (totalCount > lastSeenCount) {
+                    if (ping) ping.classList.remove('hidden');
+                    if (badge) badge.classList.remove('hidden');
+                } else if (totalCount < lastSeenCount) {
+                    // Update storage if counts decreased
+                    localStorage.setItem('admin_last_seen_notif_count', totalCount);
+                }
+            } else {
+                localStorage.setItem('admin_last_seen_notif_count', '0');
+            }
+
+            if (notifToggle && notifDropdown) {
+                notifToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Hide the red badge immediately on click (user read/seen the notification)
+                    if (ping) ping.classList.add('hidden');
+                    if (badge) badge.classList.add('hidden');
+                    localStorage.setItem('admin_last_seen_notif_count', totalCount);
+
+                    if (notifDropdown.classList.contains('hidden')) {
+                        notifDropdown.classList.remove('hidden');
+                        setTimeout(() => {
+                            notifDropdown.classList.remove('opacity-0', 'translate-y-1');
+                            notifDropdown.classList.add('opacity-100', 'translate-y-0');
+                        }, 20);
+                    } else {
+                        hideDropdown();
+                    }
+                });
+
+                document.addEventListener('click', function() {
+                    hideDropdown();
+                });
+
+                notifDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                function hideDropdown() {
+                    notifDropdown.classList.remove('opacity-100', 'translate-y-0');
+                    notifDropdown.classList.add('opacity-0', 'translate-y-1');
+                    setTimeout(() => {
+                        notifDropdown.classList.add('hidden');
+                    }, 200);
+                }
+            }
         });
     </script>
 </body>

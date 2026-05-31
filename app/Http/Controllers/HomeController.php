@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\Office;
 use App\Models\Leave;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -29,6 +30,17 @@ class HomeController extends Controller
             ->whereDate('end_date', '>=', today())
             ->first();
 
-        return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut', 'office', 'todayLeave'));
+        // Check if there are unread announcements
+        $latestAnnouncementId = Announcement::max('id') ?? 0;
+        $hasUnreadAnnouncement = $latestAnnouncementId > ($user->last_read_announcement_id ?? 0);
+
+        return view('components.features.employes.home.home', compact(
+            'user', 
+            'hasCheckedIn', 
+            'hasCheckedOut', 
+            'office', 
+            'todayLeave', 
+            'hasUnreadAnnouncement'
+        ));
     }
 }
