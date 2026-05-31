@@ -69,11 +69,14 @@
         </div>
         <!-- Logout -->
         <div class="mt-5">
-            <button
-                class="w-full bg-red-50 text-red-600 rounded-2xl py-4 font-medium flex items-center justify-center gap-2">
-                <i class="ph ph-sign-out"></i>
-                Keluar
-            </button>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit"
+                    class="w-full bg-red-50 text-red-600 rounded-2xl py-4 font-medium flex items-center justify-center gap-2">
+                    <i class="ph ph-sign-out"></i>
+                    Keluar
+                </button>
+            </form>
         </div>
     </div>
 </x-layouts>

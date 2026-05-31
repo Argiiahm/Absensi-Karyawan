@@ -4,8 +4,8 @@
         <div class="bg-blue-600 text-white rounded-b-3xl px-6 pt-10 pb-20 relative">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h1 class="text-xl font-bold flex items-center gap-2">
-                        Halo, Andi Setiawan <span class="text-2xl">👋</span>
+                    <h1 class="font-bold flex items-center gap-2">
+                        Halo, {{ $user->name }} <span class="text-2xl">👋</span>
                     </h1>
                     <p class="text-blue-100 text-sm mt-1">
                         Selamat pagi! Semangat bekerja hari ini.
@@ -22,15 +22,20 @@
             <div class="bg-white rounded-2xl p-5 border border-slate-100 flex items-center justify-between">
                 <div>
                     <p class="text-sm text-slate-500 font-medium">
-                        Kamis, 16 Mei 2024
+                        {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
                     </p>
-                    <h2 class="text-4xl font-bold text-slate-800 mt-1 font-mono">
-                        09:41:20
+                    <h2 id="realtime-clock" class="text-4xl font-bold text-slate-800 mt-1 font-mono">
+                        {{ \Carbon\Carbon::now()->format('H:i:s') }}
                     </h2>
-                    <p
-                        class="text-xs font-semibold text-emerald-600 mt-2 bg-emerald-50 inline-block px-2 py-1 rounded-md">
-                        Sudah Absen Masuk
-                    </p>
+                    @if($hasCheckedIn)
+                        <p class="text-xs font-semibold text-emerald-650 mt-2 bg-emerald-50 inline-block px-2.5 py-1 rounded-md">
+                            Sudah Absen Masuk
+                        </p>
+                    @else
+                        <p class="text-xs font-semibold text-amber-650 mt-2 bg-amber-50 inline-block px-2.5 py-1 rounded-md">
+                            Belum Absen Masuk
+                        </p>
+                    @endif
                 </div>
                 <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center">
                     <i class="ph-fill ph-laptop text-4xl text-blue-500"></i>
@@ -53,13 +58,19 @@
                                 Absen Masuk
                             </p>
                             <p class="text-xs text-slate-500">
-                                09:41 WIB
+                                {{ $hasCheckedIn ? $hasCheckedIn->created_at->format('H:i') . ' WIB' : 'Belum absen masuk' }}
                             </p>
                         </div>
                     </div>
-                    <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        sudah absen
-                    </span>
+                    @if($hasCheckedIn)
+                        <span class="text-xs font-medium text-emerald-650 bg-emerald-50 px-2.5 py-1 rounded-full">
+                            Sudah Absen
+                        </span>
+                    @else
+                        <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
+                            Belum Absen
+                        </span>
+                    @endif
                 </div>
                 <div class="bg-white p-4 rounded-xl border border-slate-100 flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -72,11 +83,19 @@
                                 Absen Pulang
                             </p>
                             <p class="text-xs text-slate-500">
-                                Belum absen pulang
+                                {{ $hasCheckedOut ? $hasCheckedOut->created_at->format('H:i') . ' WIB' : 'Belum absen pulang' }}
                             </p>
                         </div>
                     </div>
-                    <i class="ph ph-caret-right text-slate-400"></i>
+                    @if($hasCheckedOut)
+                        <span class="text-xs font-medium text-emerald-650 bg-emerald-50 px-2.5 py-1 rounded-full">
+                            Sudah Absen
+                        </span>
+                    @else
+                        <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
+                            Belum Absen
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -119,4 +138,15 @@
             </div>
         </div>
     </div>
+
+    <script>
+        setInterval(() => {
+            const clockEl = document.getElementById('realtime-clock');
+            if (clockEl) {
+                const now = new Date();
+                const pad = (n) => String(n).padStart(2, '0');
+                clockEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+            }
+        }, 1000);
+    </script>
 </x-layouts>

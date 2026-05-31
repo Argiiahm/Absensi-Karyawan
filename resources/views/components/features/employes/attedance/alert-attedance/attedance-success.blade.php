@@ -18,10 +18,10 @@
                 <i class="ph-fill ph-check-circle text-6xl text-emerald-500"></i>
             </div>
             <h2 class="text-2xl font-bold text-zinc-900 text-center">
-                Absen Berhasil!
+                Absen {{ $attendance && $attendance->type === 'pulang' ? 'Pulang' : 'Masuk' }} Berhasil!
             </h2>
             <p class="text-sm text-zinc-500 text-center mt-2 mb-8">
-                Absen Anda berhasil dicatat.
+                Absen {{ $attendance && $attendance->type === 'pulang' ? 'pulang' : 'masuk' }} Anda berhasil dicatat.
             </p>
             <!-- Detail Card -->
             <div class="w-full bg-white rounded-3xl border border-zinc-100 shadow-sm p-5 space-y-5">
@@ -34,7 +34,7 @@
                             Tanggal
                         </p>
                         <p class="font-semibold text-zinc-900">
-                            29 Mei 2026
+                            {{ $attendance ? \Carbon\Carbon::parse($attendance->date)->locale('id')->isoFormat('D MMMM Y') : '-' }}
                         </p>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                             Waktu
                         </p>
                         <p class="font-semibold text-zinc-900">
-                            09:41 WIB
+                            {{ $attendance ? \Carbon\Carbon::parse($attendance->time)->format('H:i') : '-' }} WIB
                         </p>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                             Lokasi
                         </p>
                         <p class="font-semibold text-zinc-900">
-                            Kantor Pusat
+                            {{ $office->name ?? '-' }}
                         </p>
                     </div>
                 </div>
@@ -70,10 +70,10 @@
                     </div>
                     <div>
                         <p class="text-xs text-zinc-500">
-                            Jarak
+                            Jarak Presisi
                         </p>
                         <p class="font-semibold text-zinc-900">
-                            25 Meter Dalam Radius
+                            {{ $distance !== null ? round($distance, 1) . ' Meter (Dalam Radius)' : '-' }}
                         </p>
                     </div>
                 </div>

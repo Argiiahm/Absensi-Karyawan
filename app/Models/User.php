@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'is_face_enrolled',
+        'face_descriptor',
+        'face_photo_path',
     ];
 
     /**
@@ -43,6 +47,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_face_enrolled' => 'boolean',
+            'face_descriptor' => 'array',
         ];
     }
 }

@@ -9,42 +9,69 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
+use App\Models\Attendance;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Authentication Routes
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request');
-Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
-
-Route::get('/', function () {
-    return view('components.features.employes.home.home');
+// Guest Routes
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.post')->middleware('throttle:5,1');
+    Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/register', [AuthController::class, 'handleRegister'])->name('register.post')->middleware('throttle:5,1');
+    Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.request');
+    Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 });
 
+// Face Enrollment (accessed by authenticated users or guests with pending session)
+Route::get('/face-enrollment', [AuthController::class, 'faceEnrollmentView'])->name('face.enrollment');
+Route::post('/face-enrollment', [AuthController::class, 'faceEnrollmentStore'])->name('face.enrollment.store')->middleware('throttle:5,1');
 
-// attedance/absen
-// absen biasa
-Route::get('/attedance', [AttedenceController::class, 'index']);
-// absen sholat
-Route::get('/attedance/ishoma/index', [AttedenceController::class, 'attedanceIshomaIndex']);
-Route::get('/attedance/ishoma', [AttedenceController::class, 'attedanceIshoma']);
+// Authenticated Routes
+Route::middleware(['auth'])->group(function () {
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// absen action (selfie)
-Route::get('/attedance/action', [AttedenceController::class, 'attedanceAction']);
-// absen sukses
-Route::get('/attedance/success', [AttedenceController::class, 'attedanceSuccess']);
-// history attedance/riwayat absen
-Route::get('/history', [HistoryController::class, 'index']);
+    // Face Enrolled Employee Routes
+    Route::middleware(['face.enrolled'])->group(function () {
+        Route::get('/', function () {
+            $user = Auth::user();
+            $todayAttendance = Attendance::where('user_id', $user->id)
+                ->whereDate('created_at', today())
+                ->get();
 
-// statistik
-Route::get('/statistik', [StatistikController::class, 'index']);
+            $hasCheckedIn = $todayAttendance->where('type', 'masuk')->first();
+            $hasCheckedOut = $todayAttendance->where('type', 'pulang')->first();
 
-// profile
-Route::get('/profile', [ProfileController::class, 'profile']);
+            return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut'));
+        })->name('home');
+
+        // Attendance/Absen
+        Route::get('/attedance', [AttedenceController::class, 'index'])->name('attendance.index');
+        Route::post('/api/offices/closest', [AttedenceController::class, 'getClosestOffice'])->name('api.offices.closest');
+
+        Route::get('/attedance/action', [AttedenceController::class, 'attedanceAction'])->name('attendance.action');
+        Route::post('/api/attedance/submit', [AttedenceController::class, 'submit'])->name('attendance.submit')->middleware('throttle:5,1');
+        Route::get('/attedance/success', [AttedenceController::class, 'attedanceSuccess'])->name('attendance.success');
+
+        Route::get('/attedance/ishoma/index', [AttedenceController::class, 'attedanceIshomaIndex']);
+        Route::get('/attedance/ishoma', [AttedenceController::class, 'attedanceIshoma']);
+
+        // History
+        Route::get('/history', [HistoryController::class, 'index']);
+
+        // Statistik
+        Route::get('/statistik', [StatistikController::class, 'index']);
+
+        // Profile
+        Route::get('/profile', [ProfileController::class, 'profile']);
+    });
+});
 
 // Admin Dashboard Routes
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
+
     // Kelola Karyawan (CRUD)
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::get('/employees/create', [EmployeeController::class, 'create']);

@@ -15,9 +15,21 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed default office
+        \App\Models\Office::create([
+            'name' => 'Kantor Pusat',
+            'latitude' => -6.20880000,
+            'longitude' => 106.84560000,
+            'radius' => 100, // 100 meters radius for geofencing.
+        ]);
+
+        // Seed test admin user
+        \App\Models\User::create([
+            'name' => 'Admin Utama',
+            'email' => 'admin@absenkita.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+            'role' => 'admin',
+            'is_face_enrolled' => false,
         ]);
     }
 }
