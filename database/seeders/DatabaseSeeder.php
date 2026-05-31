@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             'latitude' => -6.20880000,
             'longitude' => 106.84560000,
             'radius' => 100, // 100 meters radius for geofencing.
+            'start_time' => '07:00:00',
+            'end_time' => '17:00:00',
         ]);
 
         // Seed test admin user

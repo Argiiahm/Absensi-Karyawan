@@ -49,15 +49,20 @@
     <!-- User Profile / Footer Sidebar -->
     <div class="p-4 border-t border-slate-50">
         <div class="flex items-center gap-3 p-2">
-            <img src="https://i.pravatar.cc/100?img=33" alt="Admin Avatar" class="w-9 h-9 rounded-full object-cover">
+            <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold uppercase shrink-0">
+                {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+            </div>
             <div class="min-w-0 flex-1">
-                <p class="text-xs font-semibold text-slate-800 truncate">Administrator</p>
-                <p class="text-[10px] text-slate-400 truncate">admin@company.com</p>
+                <p class="text-xs font-bold text-slate-800 truncate">{{ auth()->user()->name ?? 'Administrator' }}</p>
+                <p class="text-[10px] text-slate-500 truncate">{{ auth()->user()->email ?? 'admin@company.com' }}</p>
             </div>
         </div>
-        <a href="/profile" class="mt-2 w-full py-2 px-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all">
-            <i class="ph ph-sign-out"></i>
-            Keluar Dashboard
-        </a>
+        <form method="POST" action="{{ route('logout') }}" class="mt-2">
+            @csrf
+            <button type="submit" class="w-full py-2 px-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                <i class="ph ph-sign-out text-sm"></i>
+                Logout
+            </button>
+        </form>
     </div>
 </aside>

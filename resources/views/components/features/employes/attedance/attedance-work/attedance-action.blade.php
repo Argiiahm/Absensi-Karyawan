@@ -9,7 +9,7 @@
                 Selfie & Liveness
             </h1>
             <p class="text-xs text-zinc-500">
-                Absen {{ $type === 'masuk' ? 'Masuk' : 'Pulang' }} - Verifikasi Kehadiran
+                Absen @if(in_array($type, ['masuk', 'pulang'])) {{ ucfirst($type) }} @else Sholat {{ ucfirst($type) }} @endif - Verifikasi Kehadiran
             </p>
         </div>
     </div>

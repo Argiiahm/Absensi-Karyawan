@@ -84,6 +84,42 @@ class AttendanceService
             ];
         }
 
+        // Enforce time validation
+        $now = now();
+        if ($type === 'masuk') {
+            $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $closestOffice->start_time);
+            $allowedStartTime = $startTime->copy()->subMinutes(10);
+            if ($now->lt($allowedStartTime)) {
+                return [
+                    'status' => 'failed',
+                    'message' => 'Absensi ditolak: Belum waktunya absen masuk. Pintu absen masuk dibuka jam ' . $allowedStartTime->format('H:i') . ' WIB.'
+                ];
+            }
+        } elseif ($type === 'pulang') {
+            $endTime = \Carbon\Carbon::createFromFormat('H:i:s', $closestOffice->end_time);
+            if ($now->lt($endTime)) {
+                return [
+                    'status' => 'failed',
+                    'message' => 'Absensi ditolak: Belum waktunya absen pulang. Pintu absen pulang dibuka jam ' . $endTime->format('H:i') . ' WIB.'
+                ];
+            }
+        } elseif (in_array($type, ['subuh', 'zuhur', 'asar', 'maghrib', 'isya'])) {
+            $prayerTimes = [
+                'subuh'   => '04:38',
+                'zuhur'   => '12:05',
+                'asar'    => '15:28',
+                'maghrib' => '18:10',
+                'isya'    => '19:20',
+            ];
+            $pTime = \Carbon\Carbon::createFromFormat('H:i', $prayerTimes[$type]);
+            if ($now->lt($pTime)) {
+                return [
+                    'status' => 'failed',
+                    'message' => 'Absensi ditolak: Belum waktunya sholat ' . ucfirst($type) . ' (' . $prayerTimes[$type] . ' WIB).'
+                ];
+            }
+        }
+
         if ($minDistance > $maxRadius) {
             // Out of bounds log
             AttendanceLog::create([

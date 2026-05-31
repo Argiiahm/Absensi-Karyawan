@@ -41,6 +41,12 @@
                     <i class="ph-fill ph-laptop text-4xl text-blue-500"></i>
                 </div>
             </div>
+
+            <!-- Ketentuan Jam Kerja -->
+            <div class="bg-blue-50/70 border border-blue-100 rounded-xl px-4 py-2.5 mt-3 flex items-center gap-2 text-xs text-blue-800 font-medium">
+                <i class="ph-fill ph-info text-blue-600 text-base"></i>
+                <span>Ket: Absen masuk pkl {{ $office ? \Carbon\Carbon::parse($office->start_time)->format('H.i') : '07.00' }}, absen pulang pkl {{ $office ? \Carbon\Carbon::parse($office->end_time)->format('H.i') : '17.00' }}</span>
+            </div>
         </div>
         <!-- Ringkasan -->
         <div class="px-5 mt-6">
@@ -58,14 +64,27 @@
                                 Absen Masuk
                             </p>
                             <p class="text-xs text-slate-500">
-                                {{ $hasCheckedIn ? $hasCheckedIn->created_at->format('H:i') . ' WIB' : 'Belum absen masuk' }}
+                                {{ $hasCheckedIn ? \Carbon\Carbon::parse($hasCheckedIn->time)->format('H:i') . ' WIB' : 'Belum absen masuk' }}
+                            </p>
+                            <p class="text-[10px] text-slate-400 mt-0.5 font-semibold">
+                                Jam Masuk: {{ $office ? substr($office->start_time, 0, 5) : '07:00' }} WIB
                             </p>
                         </div>
                     </div>
                     @if($hasCheckedIn)
-                        <span class="text-xs font-medium text-emerald-650 bg-emerald-50 px-2.5 py-1 rounded-full">
-                            Sudah Absen
-                        </span>
+                        @php
+                            $officeStartTime = $hasCheckedIn->office ? $hasCheckedIn->office->start_time : '07:00:00';
+                            $isLate = \Carbon\Carbon::parse($hasCheckedIn->time)->gt(\Carbon\Carbon::parse($officeStartTime));
+                        @endphp
+                        @if($isLate)
+                            <span class="text-xs font-bold text-amber-650 bg-amber-50 px-2.5 py-1 rounded-full">
+                                Terlambat
+                            </span>
+                        @else
+                            <span class="text-xs font-bold text-emerald-650 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                Tepat Waktu
+                            </span>
+                        @endif
                     @else
                         <span class="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
                             Belum Absen
@@ -83,7 +102,10 @@
                                 Absen Pulang
                             </p>
                             <p class="text-xs text-slate-500">
-                                {{ $hasCheckedOut ? $hasCheckedOut->created_at->format('H:i') . ' WIB' : 'Belum absen pulang' }}
+                                {{ $hasCheckedOut ? \Carbon\Carbon::parse($hasCheckedOut->time)->format('H:i') . ' WIB' : 'Belum absen pulang' }}
+                            </p>
+                            <p class="text-[10px] text-slate-400 mt-0.5 font-semibold">
+                                Jam Pulang: {{ $office ? substr($office->end_time, 0, 5) : '17:00' }} WIB
                             </p>
                         </div>
                     </div>

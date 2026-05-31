@@ -46,9 +46,19 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_face_enrolled' => 'boolean',
-            'face_descriptor' => 'array',
+            'password'          => 'hashed',
+            'is_face_enrolled'  => 'boolean',
+            'face_descriptor'   => 'array',
         ];
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(\App\Models\Attendance::class);
+    }
+
+    public function attendanceLogs()
+    {
+        return $this->hasMany(\App\Models\AttendanceLog::class);
     }
 }

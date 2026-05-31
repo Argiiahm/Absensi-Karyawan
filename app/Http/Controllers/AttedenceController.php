@@ -27,13 +27,38 @@ class AttedenceController extends Controller
     {
         $userId = Auth::id();
         $todayAttendance = Attendance::where('user_id', $userId)
-            ->whereDate('created_at', today())
+            ->whereDate('date', today())
             ->where('type', 'masuk')
             ->first();
 
         $type = $todayAttendance ? 'pulang' : 'masuk';
+        $office = Office::first();
 
-        return view('components.features.employes.attedance.attedance-work.attedance', compact('type'));
+        $isAllowed = true;
+        $reason = '';
+        $scheduleTime = '';
+
+        if ($office) {
+            $now = now();
+            if ($type === 'masuk') {
+                $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $office->start_time);
+                $allowedStartTime = $startTime->copy()->subMinutes(10);
+                $scheduleTime = substr($office->start_time, 0, 5) . ' (Bisa absen mulai ' . $allowedStartTime->format('H:i') . ')';
+                if ($now->lt($allowedStartTime)) {
+                    $isAllowed = false;
+                    $reason = 'Belum waktunya absen masuk. Absen dibuka 10 menit sebelum jam masuk (' . $allowedStartTime->format('H:i') . ' WIB).';
+                }
+            } else {
+                $endTime = \Carbon\Carbon::createFromFormat('H:i:s', $office->end_time);
+                $scheduleTime = substr($office->end_time, 0, 5);
+                if ($now->lt($endTime)) {
+                    $isAllowed = false;
+                    $reason = 'Belum waktunya absen pulang. Absen pulang dibuka mulai jam ' . $endTime->format('H:i') . ' WIB.';
+                }
+            }
+        }
+
+        return view('components.features.employes.attedance.attedance-work.attedance', compact('type', 'isAllowed', 'reason', 'scheduleTime', 'office'));
     }
 
     // API untuk mencari kantor terdekat
@@ -110,6 +135,33 @@ class AttedenceController extends Controller
             return redirect()->route('attendance.index')->with('error', 'Absensi diblokir: Jarak Anda (' . round($minDistance, 1) . 'm) melebihi radius batas kantor ' . $closestOffice->name . ' (' . $maxRadius . 'm).');
         }
 
+        // Enforce time validation
+        $now = now();
+        if ($type === 'masuk') {
+            $startTime = \Carbon\Carbon::createFromFormat('H:i:s', $closestOffice->start_time);
+            $allowedStartTime = $startTime->copy()->subMinutes(10);
+            if ($now->lt($allowedStartTime)) {
+                return redirect()->route('attendance.index')->with('error', 'Belum waktunya absen masuk. Pintu absen masuk dibuka jam ' . $allowedStartTime->format('H:i') . ' WIB.');
+            }
+        } elseif ($type === 'pulang') {
+            $endTime = \Carbon\Carbon::createFromFormat('H:i:s', $closestOffice->end_time);
+            if ($now->lt($endTime)) {
+                return redirect()->route('attendance.index')->with('error', 'Belum waktunya absen pulang. Pintu absen pulang dibuka jam ' . $endTime->format('H:i') . ' WIB.');
+            }
+        } elseif (in_array($type, ['subuh', 'zuhur', 'asar', 'maghrib', 'isya'])) {
+            $prayerTimes = [
+                'subuh'   => '04:38',
+                'zuhur'   => '12:05',
+                'asar'    => '15:28',
+                'maghrib' => '18:10',
+                'isya'    => '19:20',
+            ];
+            $pTime = \Carbon\Carbon::createFromFormat('H:i', $prayerTimes[$type]);
+            if ($now->lt($pTime)) {
+                return redirect('/attedance/ishoma/index')->with('error', 'Belum waktunya sholat ' . ucfirst($type) . ' (' . $prayerTimes[$type] . ' WIB).');
+            }
+        }
+
         return view('components.features.employes.attedance.attedance-work.attedance-action', compact('type'));
     }
 
@@ -117,7 +169,7 @@ class AttedenceController extends Controller
     public function submit(Request $request)
     {
         $request->validate([
-            'type' => ['required', 'string', 'in:masuk,pulang'],
+            'type' => ['required', 'string', 'in:masuk,pulang,subuh,zuhur,asar,maghrib,isya'],
             'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
             'face_descriptor' => ['required', 'array'],
@@ -157,32 +209,31 @@ class AttedenceController extends Controller
     {
         $userId = Auth::id();
         
-        // Find the latest successful attendance for today
-        $attendance = Attendance::where('user_id', $userId)
+        // Eager load 'office' to prevent an extra query (N+1 elimination)
+        $attendance = Attendance::with('office')
+            ->where('user_id', $userId)
             ->whereDate('date', today())
             ->orderBy('id', 'desc')
             ->first();
             
-        // If not found, fall back to the absolute latest attendance ever
+        // If not found today, fall back to the absolute latest attendance ever
         if (!$attendance) {
-            $attendance = Attendance::where('user_id', $userId)
+            $attendance = Attendance::with('office')
+                ->where('user_id', $userId)
                 ->orderBy('id', 'desc')
                 ->first();
         }
         
-        // Find the associated office and distance
-        $office = null;
+        // Calculate distance using the eagerly-loaded office (no extra query)
+        $office   = $attendance?->office;
         $distance = null;
-        if ($attendance) {
-            $office = Office::find($attendance->office_id);
-            if ($office) {
-                $distance = $this->geoLocationService->calculateDistance(
-                    $attendance->latitude,
-                    $attendance->longitude,
-                    $office->latitude,
-                    $office->longitude
-                );
-            }
+        if ($attendance && $office) {
+            $distance = $this->geoLocationService->calculateDistance(
+                $attendance->latitude,
+                $attendance->longitude,
+                $office->latitude,
+                $office->longitude
+            );
         }
 
         return view('components.features.employes.attedance.alert-attedance.attedance-success', compact('attendance', 'office', 'distance'));
@@ -191,11 +242,26 @@ class AttedenceController extends Controller
     // Halaman absen sholat (riwayat)
     public function attedanceIshomaIndex()
     {
-        return view('components.features.employes.attedance.attdance-ishoma.index');
+        $userId = Auth::id();
+        $todayPrayers = Attendance::where('user_id', $userId)
+            ->whereDate('date', today())
+            ->whereIn('type', ['subuh', 'zuhur', 'asar', 'maghrib', 'isya'])
+            ->get()
+            ->keyBy('type');
+
+        $office = Office::first();
+
+        return view('components.features.employes.attedance.attdance-ishoma.index', compact('todayPrayers', 'office'));
     }
 
-    public function attedanceIshoma()
+    public function attedanceIshoma(Request $request)
     {
-        return view('components.features.employes.attedance.attdance-ishoma.attedance-ishoma');
+        $type = $request->query('type', 'zuhur');
+
+        if (!in_array($type, ['subuh', 'zuhur', 'asar', 'maghrib', 'isya'])) {
+            return redirect('/attedance/ishoma/index')->with('error', 'Waktu sholat tidak valid.');
+        }
+
+        return view('components.features.employes.attedance.attdance-ishoma.attedance-ishoma', compact('type'));
     }
 }

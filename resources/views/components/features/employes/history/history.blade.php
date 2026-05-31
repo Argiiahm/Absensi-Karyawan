@@ -64,11 +64,27 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <span class="text-[10px] bg-emerald-50 text-emerald-650 px-2 py-0.5 rounded-full font-bold">
-                                        Sukses
-                                    </span>
-                                    <p class="text-[10px] text-slate-400 mt-2 font-mono">
-                                        Dist: {{ round($record->matching_score, 3) }}
+                                    @if($record->type === 'masuk')
+                                        @php
+                                            $officeStartTime = $record->office ? $record->office->start_time : '07:00:00';
+                                            $isLate = \Carbon\Carbon::parse($record->time)->gt(\Carbon\Carbon::parse($officeStartTime));
+                                        @endphp
+                                        @if($isLate)
+                                            <span class="text-[10px] bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full font-bold">
+                                                Terlambat
+                                            </span>
+                                        @else
+                                            <span class="text-[10px] bg-emerald-50 text-emerald-650 px-2.5 py-1 rounded-full font-bold">
+                                                Tepat Waktu
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full font-bold">
+                                            Selesai
+                                        </span>
+                                    @endif
+                                    <p class="text-[10px] text-slate-400 mt-2 font-mono font-medium">
+                                        Cocok: {{ round($record->matching_score * 100) }}%
                                     </p>
                                 </div>
                             </div>

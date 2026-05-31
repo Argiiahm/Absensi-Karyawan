@@ -54,6 +54,11 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect('/');
         }
+        
+        // Force initialize and save session so the browser gets the cookie immediately
+        session()->put('registration_started', true);
+        session()->save();
+
         return view('components.features.auth.register');
     }
 
@@ -67,6 +72,7 @@ class AuthController extends Controller
 
         // Store pending registration data in session
         session(['pending_registration' => $data]);
+        session()->save(); // Force save to session database/store before redirecting
 
         return redirect()->route('face.enrollment');
     }

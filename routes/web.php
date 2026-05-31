@@ -33,17 +33,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Face Enrolled Employee Routes
-    Route::middleware(['face.enrolled'])->group(function () {
+    Route::middleware(['face.enrolled', 'employee'])->group(function () {
         Route::get('/', function () {
             $user = Auth::user();
-            $todayAttendance = Attendance::where('user_id', $user->id)
-                ->whereDate('created_at', today())
+            // Eager load 'office' to prevent N+1 queries in the view
+            $todayAttendance = Attendance::with('office')
+                ->where('user_id', $user->id)
+                ->whereDate('date', today())
                 ->get();
 
             $hasCheckedIn = $todayAttendance->where('type', 'masuk')->first();
             $hasCheckedOut = $todayAttendance->where('type', 'pulang')->first();
+            $office = \App\Models\Office::first();
 
-            return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut'));
+            return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut', 'office'));
         })->name('home');
 
         // Attendance/Absen
@@ -69,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin Dashboard Routes
-Route::prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
     // Kelola Karyawan (CRUD)

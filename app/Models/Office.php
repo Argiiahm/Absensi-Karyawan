@@ -14,11 +14,18 @@ class Office extends Model
         'latitude',
         'longitude',
         'radius',
+        'start_time',
+        'end_time',
     ];
 
     protected $casts = [
-        'latitude' => 'double',
+        'latitude'  => 'double',
         'longitude' => 'double',
-        'radius' => 'integer',
+        'radius'    => 'integer',
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(\App\Models\Attendance::class);
+    }
 }

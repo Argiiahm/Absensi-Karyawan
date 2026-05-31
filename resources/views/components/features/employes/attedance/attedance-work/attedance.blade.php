@@ -23,6 +23,13 @@
                 Pastikan Anda berada di lokasi kantor dalam radius toleransi maksimal <span id="text-office-radius">100</span> meter.
             </p>
 
+            @if (!$isAllowed)
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-xl p-4 mb-6 flex items-center gap-2.5 shadow-sm">
+                    <i class="ph-bold ph-lock-keyhole text-lg text-amber-600 animate-pulse"></i>
+                    <div>{{ $reason }}</div>
+                </div>
+            @endif
+
             @if (session('error'))
                 <div class="bg-red-50 border border-red-200 text-red-800 text-xs font-semibold rounded-xl p-4 mb-6 flex items-center gap-2.5">
                     <i class="ph-bold ph-warning-circle text-lg"></i>
@@ -343,7 +350,25 @@
             }
         }
 
-        // Run automatically when page is loaded
+        // Run automatically when page is loaded if allowed
+        @if($isAllowed)
         window.addEventListener('DOMContentLoaded', getLocation);
+        @else
+        window.addEventListener('DOMContentLoaded', () => {
+            const mapLoading = document.getElementById('map-loading');
+            if (mapLoading) {
+                mapLoading.className = "absolute inset-0 bg-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-400 z-20";
+                mapLoading.innerHTML = `<i class="ph ph-lock text-3xl mb-2 text-amber-500"></i><span class="text-xs font-bold text-slate-700">Absensi Belum Dibuka</span>`;
+            }
+            updateUIError("Absen Terkunci", "{{ $reason }}");
+            
+            const btnRefresh = document.getElementById('btn-refresh');
+            if (btnRefresh) {
+                btnRefresh.disabled = true;
+                btnRefresh.className = "w-full py-3 bg-slate-100 text-slate-400 font-semibold rounded-xl text-sm border border-slate-200 cursor-not-allowed";
+                btnRefresh.removeAttribute('onclick');
+            }
+        });
+        @endif
     </script>
 </x-layout-attedance>

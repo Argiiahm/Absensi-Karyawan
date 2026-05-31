@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    // profile
     public function profile()
     {
-        return view('components.features.employes.profile.profile');
+        $user = Auth::user();
+        return view('components.features.employes.profile.profile', compact('user'));
     }
 }

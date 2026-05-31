@@ -18,10 +18,10 @@
                 <i class="ph-fill ph-check-circle text-6xl text-emerald-500"></i>
             </div>
             <h2 class="text-2xl font-bold text-zinc-900 text-center">
-                Absen {{ $attendance && $attendance->type === 'pulang' ? 'Pulang' : 'Masuk' }} Berhasil!
+                Absen @if($attendance && in_array($attendance->type, ['masuk', 'pulang'])) {{ ucfirst($attendance->type) }} @else Sholat {{ ucfirst($attendance?->type) }} @endif Berhasil!
             </h2>
             <p class="text-sm text-zinc-500 text-center mt-2 mb-8">
-                Absen {{ $attendance && $attendance->type === 'pulang' ? 'pulang' : 'masuk' }} Anda berhasil dicatat.
+                Absen @if($attendance && in_array($attendance->type, ['masuk', 'pulang'])) {{ $attendance->type }} @else Sholat {{ $attendance?->type }} @endif Anda berhasil dicatat.
             </p>
             <!-- Detail Card -->
             <div class="w-full bg-white rounded-3xl border border-zinc-100 shadow-sm p-5 space-y-5">
