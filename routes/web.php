@@ -7,10 +7,9 @@ use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\AttedenceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
-use App\Models\Attendance;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Guest Routes
@@ -34,20 +33,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Face Enrolled Employee Routes
     Route::middleware(['face.enrolled', 'employee'])->group(function () {
-        Route::get('/', function () {
-            $user = Auth::user();
-            // Eager load 'office' to prevent N+1 queries in the view
-            $todayAttendance = Attendance::with('office')
-                ->where('user_id', $user->id)
-                ->whereDate('date', today())
-                ->get();
-
-            $hasCheckedIn = $todayAttendance->where('type', 'masuk')->first();
-            $hasCheckedOut = $todayAttendance->where('type', 'pulang')->first();
-            $office = \App\Models\Office::first();
-
-            return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut', 'office'));
-        })->name('home');
+        // home
+        Route::get('/', [HomeController::class, 'index'])->name('home');
 
         // Attendance/Absen
         Route::get('/attedance', [AttedenceController::class, 'index'])->name('attendance.index');
