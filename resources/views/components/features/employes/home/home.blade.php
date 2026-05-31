@@ -27,7 +27,11 @@
                     <h2 id="realtime-clock" class="text-4xl font-bold text-slate-800 mt-1 font-mono">
                         {{ \Carbon\Carbon::now()->format('H:i:s') }}
                     </h2>
-                    @if($hasCheckedIn)
+                    @if($todayLeave)
+                        <p class="text-xs font-semibold text-indigo-600 mt-2 bg-indigo-50 inline-block px-2.5 py-1 rounded-md animate-pulse">
+                            Status: {{ ucfirst($todayLeave->type) }} (Disetujui)
+                        </p>
+                    @elseif($hasCheckedIn)
                         <p class="text-xs font-semibold text-emerald-650 mt-2 bg-emerald-50 inline-block px-2.5 py-1 rounded-md">
                             Sudah Absen Masuk
                         </p>
@@ -37,8 +41,12 @@
                         </p>
                     @endif
                 </div>
-                <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center">
-                    <i class="ph-fill ph-laptop text-4xl text-blue-500"></i>
+                <div class="w-24 h-24 {{ $todayLeave ? 'bg-indigo-50' : 'bg-blue-50' }} rounded-full flex items-center justify-center">
+                    @if($todayLeave)
+                        <i class="ph-fill ph-calendar-blank text-4xl text-indigo-500"></i>
+                    @else
+                        <i class="ph-fill ph-laptop text-4xl text-blue-500"></i>
+                    @endif
                 </div>
             </div>
 
@@ -126,35 +134,45 @@
             <h3 class="font-bold text-slate-800 mb-3">
                 Menu Utama
             </h3>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-3 gap-3">
                 <a href="/attedance"
-                    class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-100">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2">
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                    <div class="w-11 h-11 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2">
                         <i class="ph-fill ph-fingerprint text-xl"></i>
                     </div>
 
-                    <span class="text-xs font-medium text-slate-700">
+                    <span class="text-[11px] font-medium text-slate-700">
                         Absen
                     </span>
                 </a>
                 <a href="/history"
-                    class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-100">
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
                     <div
-                        class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-2">
+                        class="w-11 h-11 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-2">
                         <i class="ph-fill ph-clock-counter-clockwise text-xl"></i>
                     </div>
-                    <span class="text-xs font-medium text-slate-700">
+                    <span class="text-[11px] font-medium text-slate-700">
                         Riwayat
                     </span>
                 </a>
                 <a href="/statistik"
-                    class="flex flex-col items-center justify-center bg-white p-3 rounded-xl border border-slate-100">
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
                     <div
-                        class="w-12 h-12 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center mb-2">
+                        class="w-11 h-11 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center mb-2">
                         <i class="ph-fill ph-chart-bar text-xl"></i>
                     </div>
-                    <span class="text-xs font-medium text-slate-700">
+                    <span class="text-[11px] font-medium text-slate-700">
                         Statistik
+                    </span>
+                </a>
+                <a href="/leaves"
+                    class="flex flex-col items-center justify-center bg-white p-2.5 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                    <div
+                        class="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mb-2">
+                        <i class="ph-fill ph-envelope-open text-xl"></i>
+                    </div>
+                    <span class="text-[11px] font-medium text-slate-700">
+                        Izin / Cuti
                     </span>
                 </a>
             </div>

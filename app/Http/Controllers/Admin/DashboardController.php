@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Leave;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -24,6 +25,13 @@ class DashboardController extends Controller
         $lateToday = Attendance::whereDate('date', today())
             ->where('type', 'masuk')
             ->whereTime('time', '>', '09:00:00')
+            ->distinct('user_id')
+            ->count('user_id');
+
+        // Karyawan izin/cuti hari ini
+        $leaveToday = Leave::where('status', 'approved')
+            ->whereDate('start_date', '<=', today())
+            ->whereDate('end_date', '>=', today())
             ->distinct('user_id')
             ->count('user_id');
 
@@ -64,6 +72,7 @@ class DashboardController extends Controller
             'totalEmployees',
             'presentToday',
             'lateToday',
+            'leaveToday',
             'presentPercent',
             'recentAttendances',
             'onTimeDays',

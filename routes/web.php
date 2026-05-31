@@ -4,10 +4,12 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\LeaveController as AdminLeaveController;
 use App\Http\Controllers\AttedenceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatistikController;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'profile']);
+
+        // Leaves / Izin / Cuti
+        Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
+        Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     });
 });
 
@@ -82,4 +88,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/attendances/prayers', [AttendanceController::class, 'prayers']);
     Route::get('/attendances', [AttendanceController::class, 'index']);
     Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
+
+    // Kelola Izin / Cuti
+    Route::get('/leaves', [AdminLeaveController::class, 'index']);
+    Route::post('/leaves/{id}/approve', [AdminLeaveController::class, 'approve']);
+    Route::post('/leaves/{id}/reject', [AdminLeaveController::class, 'reject']);
 });

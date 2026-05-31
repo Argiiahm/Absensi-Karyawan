@@ -44,6 +44,12 @@
             <i class="ph-fill ph-moon text-lg"></i>
             Absensi Sholat
         </a>
+
+        <a href="/admin/leaves"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all {{ request()->is('admin/leaves*') ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800' }}">
+            <i class="ph-fill ph-envelope-open text-lg"></i>
+            Persetujuan Izin
+        </a>
     </nav>
 
     <!-- User Profile / Footer Sidebar -->

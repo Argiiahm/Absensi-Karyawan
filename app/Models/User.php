@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\AttendanceLog::class);
     }
+
+    public function leaves()
+    {
+        return $this->hasMany(\App\Models\Leave::class);
+    }
 }

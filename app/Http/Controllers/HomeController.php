@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\Office;
+use App\Models\Leave;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -21,6 +22,13 @@ class HomeController extends Controller
         $hasCheckedOut = $todayAttendance->where('type', 'pulang')->first();
         $office = Office::first();
 
-        return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut', 'office'));
+        // Check if there is an approved leave for today
+        $todayLeave = Leave::where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->whereDate('start_date', '<=', today())
+            ->whereDate('end_date', '>=', today())
+            ->first();
+
+        return view('components.features.employes.home.home', compact('user', 'hasCheckedIn', 'hasCheckedOut', 'office', 'todayLeave'));
     }
 }

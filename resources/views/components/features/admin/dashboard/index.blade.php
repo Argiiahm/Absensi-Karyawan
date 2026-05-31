@@ -1,5 +1,5 @@
 <x-layout-admin title="Dashboard Overview">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <!-- Card: Total Employees -->
         <div class="bg-white rounded-2xl border border-slate-100 p-6 flex items-center justify-between">
             <div>
@@ -45,6 +45,20 @@
             </div>
             <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl">
                 <i class="ph-fill ph-clock"></i>
+            </div>
+        </div>
+
+        <!-- Card: On Leave Today -->
+        <div class="bg-white rounded-2xl border border-slate-100 p-6 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Izin & Cuti Hari Ini</p>
+                <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $leaveToday }}</h3>
+                <span class="text-xs text-slate-400 font-medium mt-1 inline-flex items-center gap-1">
+                    Karyawan tidak masuk
+                </span>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                <i class="ph-fill ph-calendar-blank"></i>
             </div>
         </div>
 
