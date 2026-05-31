@@ -61,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'profile']);
+        Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
         // Leaves / Izin / Cuti
         Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves.index');
